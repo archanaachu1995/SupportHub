@@ -312,3 +312,5 @@ def logout_view(request):
     logout(request)
     return redirect('Home')  # Change 'home' to your actual home page name
 
+def login_login(request):
+    return render(request,'text.html')

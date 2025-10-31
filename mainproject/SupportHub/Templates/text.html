@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Login — SupportHub</title>
+  <meta name="description" content="Simple login template with HTML & CSS" />
+  <style>
+    :root{
+      --bg:#f4f7fb;
+      --card:#ffffff;
+      --accent:#2563eb;
+      --muted:#6b7280;
+      --danger:#dc2626;
+      --radius:12px;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      background:
+        radial-gradient(circle at 10% 10%, rgba(37,99,235,0.06), transparent 10%),
+        linear-gradient(180deg, #ffffff 0%, var(--bg) 100%);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:24px;
+      color:#0f172a;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+    }
+
+    .wrap{
+      width:100%;
+      max-width:960px;
+      display:grid;
+      grid-template-columns:1fr 420px;
+      gap:28px;
+      align-items:center;
+    }
+
+    /* Left promotional panel */
+    .panel{
+      display:flex;
+      flex-direction:column;
+      gap:16px;
+      padding:28px;
+      border-radius:var(--radius);
+      background:linear-gradient(180deg, rgba(37,99,235,0.06), rgba(99,102,241,0.03));
+      box-shadow:0 8px 24px rgba(2,6,23,0.06);
+      min-height:380px;
+    }
+    .brand{
+      display:flex;
+      gap:12px;
+      align-items:center;
+    }
+    .logo{
+      width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,var(--accent),#7c3aed);display:inline-flex;align-items:center;justify-content:center;color:white;font-weight:700;
+    }
+    h1{margin:0;font-size:20px}
+    p.lead{margin:0;color:var(--muted)}
+
+    /* Login card */
+    .card{
+      background:var(--card);
+      border-radius:var(--radius);
+      padding:22px;
+      box-shadow:0 12px 30px rgba(2,6,23,0.08);
+    }
+
+    form{display:flex;flex-direction:column;gap:12px}
+    label{font-size:13px;color:var(--muted);font-weight:600}
+    .input{
+      width:100%;
+      padding:12px 14px;
+      border-radius:10px;
+      border:1px solid #e6eef8;
+      font-size:14px;
+      outline:none;
+      background:white;
+    }
+    .input:focus{box-shadow:0 0 0 4px rgba(37,99,235,0.06);border-color:var(--accent)}
+
+    .row{display:flex;align-items:center;justify-content:space-between;gap:12px}
+    .checkbox{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted)}
+    .btn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
+      border:none;
+      padding:11px 14px;
+      border-radius:10px;
+      background:var(--accent);
+      color:white;
+      font-weight:700;
+      cursor:pointer;
+      font-size:14px;
+    }
+    .btn.ghost{background:transparent;color:var(--accent);border:1px solid rgba(37,99,235,0.12)}
+    .muted{color:var(--muted);font-size:13px}
+
+    .helper{display:flex;align-items:center;gap:8px;justify-content:space-between}
+    .forgot{font-size:13px;color:var(--accent);text-decoration:none}
+    .error{color:var(--danger);font-size:13px}
+
+    .pw-wrap{position:relative}
+    .pw-toggle{
+      position:absolute;
+      right:8px;
+      top:50%;
+      transform:translateY(-50%);
+      border:none;
+      background:transparent;
+      cursor:pointer;
+      font-size:13px;
+      color:var(--muted);
+      padding:6px;
+      border-radius:8px;
+    }
+
+    .divider{display:flex;align-items:center;gap:12px;margin:6px 0;color:var(--muted);font-size:13px}
+    .divider::before,.divider::after{content:"";flex:1;height:1px;background:#eef2f7;border-radius:2px}
+
+    .socials{display:flex;gap:8px}
+    .socials button{flex:1;padding:10px;border-radius:10px;border:1px solid #eef2f7;background:white;cursor:pointer}
+
+    footer{margin-top:10px;font-size:13px;color:var(--muted);text-align:center}
+
+    @media (max-width:900px){
+      .wrap{grid-template-columns:1fr;max-width:520px}
+      .panel{order:2}
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap" aria-labelledby="loginTitle">
+    <aside class="panel" aria-hidden="false">
+      <div class="brand" aria-hidden="true">
+        <div class="logo">SH</div>
+        <div>
+          <div style="font-weight:800">SupportHub</div>
+          <div class="muted" style="font-size:13px">Complaint Management</div>
+        </div>
+      </div>
+
+      <h1 id="loginTitle">Welcome back</h1>
+      <p class="lead">Sign in to continue to your dashboard and manage support tickets quickly.</p>
+
+      <div style="margin-top:auto">
+        <p class="muted" style="margin:0 0 8px 0">Need an account?</p>
+        <a href="#" class="btn ghost" aria-label="Create account">Create an account</a>
+      </div>
+    </aside>
+
+    <section class="card" aria-labelledby="formTitle">
+      <h2 id="formTitle" style="margin:0 0 6px 0;font-size:18px">Sign in</h2>
+      <p class="muted" style="margin:0 0 12px 0">Use your email and password to sign in</p>
+
+      <form id="loginForm" action="#" method="post" novalidate>
+        <div>
+          <label for="email">Email</label>
+          <input id="email" class="input" name="email" type="email" placeholder="you@company.com" required aria-required="true" />
+          <div id="emailError" class="error" style="display:none">Please enter a valid email.</div>
+        </div>
+
+        <div>
+          <label for="password">Password</label>
+          <div class="pw-wrap">
+            <input id="password" class="input" name="password" type="password" placeholder="••••••••" required aria-required="true" minlength="6" />
+            <button type="button" class="pw-toggle" id="togglePw" aria-pressed="false" aria-label="Show password">Show</button>
+          </div>
+          <div id="pwError" class="error" style="display:none">Password must be at least 6 characters.</div>
+        </div>
+
+        <div class="helper">
+          <label class="checkbox"><input type="checkbox" name="remember" /> Remember me</label>
+          <a href="#" class="forgot">Forgot password?</a>
+        </div>
+
+        <div style="display:flex;gap:8px;align-items:center">
+          <button type="submit" class="btn">Sign in</button>
+          <button type="button" class="btn ghost" onclick="document.getElementById('email').value='demo@local';document.getElementById('password').value='password';">Demo</button>
+        </div>
+
+        <div class="divider" aria-hidden="true">or continue with</div>
+
+        <div class="socials" role="group" aria-label="Social sign in">
+          <button type="button" title="Sign in with Google">Google</button>
+          <button type="button" title="Sign in with GitHub">GitHub</button>
+        </div>
+      </form>
+
+      <footer>By signing in you agree to our <a href="#">Terms</a> & <a href="#">Privacy</a>.</footer>
+    </section>
+  </main>
+
+  <script>
+    // Small UX helpers: show/hide password and basic client validation
+    const toggle = document.getElementById('togglePw');
+    const pw = document.getElementById('password');
+    const form = document.getElementById('loginForm');
+    const email = document.getElementById('email');
+
+    toggle.addEventListener('click', () => {
+      const isPwd = pw.type === 'password';
+      pw.type = isPwd ? 'text' : 'password';
+      toggle.textContent = isPwd ? 'Hide' : 'Show';
+      toggle.setAttribute('aria-pressed', String(isPwd));
+    });
+
+    form.addEventListener('submit', (e) => {
+      // simple client validation to show friendly messages
+      let ok = true;
+      document.getElementById('emailError').style.display = 'none';
+      document.getElementById('pwError').style.display = 'none';
+
+      if(!email.checkValidity()){
+        document.getElementById('emailError').style.display = 'block';
+        ok = false;
+      }
+      if(!pw.value || pw.value.length < 6){
+        document.getElementById('pwError').style.display = 'block';
+        ok = false;
+      }
+      if(!ok){
+        e.preventDefault();
+        return;
+      }
+
+      // Normally you would submit to the server here (fetch()/XHR or normal POST).
+      e.preventDefault();
+      // Demo success action:
+      alert('Login submitted — replace this with real auth logic.');
+    });
+  </script>
+</body>
+</html>
