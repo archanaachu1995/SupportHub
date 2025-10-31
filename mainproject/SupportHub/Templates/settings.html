@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings | SupportHub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* --- Custom Pastel Green and Dark Gray Theme --- */
+        .bg-primary-green { background-color: #68d391; }
+        .hover-bg-primary-green:hover { background-color: #48bb78; }
+        .text-primary-green { color: #68d391; }
+        .bg-dark-header { background-color: #1a202c; } /* Dark Charcoal/Black */
+        .bg-pastel-light { background-color: #f7fafc; } /* Light background */
+        .text-dark-gray { color: #2d3748; }
+
+        /* Custom focus ring for form elements */
+        .form-input:focus {
+            outline: none;
+            border-color: #68d391; /* Pastel Green */
+            box-shadow: 0 0 0 3px rgba(104, 211, 145, 0.4);
+        }
+    </style>
+</head>
+<body class="bg-pastel-light min-h-screen flex flex-col font-sans">
+
+    <header class="bg-dark-header text-white py-4 shadow-xl">
+        <div class="container mx-auto flex justify-between items-center px-6 md:px-8">
+            <h1 class="text-2xl font-extrabold flex items-center space-x-2">
+                <svg class="w-6 h-6 text-primary-green" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37a1.724 1.724 0 002.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                <span>User Settings</span>
+            </h1>
+            <a href="{% url 'dashboard' %}" class="bg-primary-green text-dark-gray px-4 py-2 rounded-lg font-semibold hover-bg-primary-green transition duration-200 shadow-md">
+                ← Back to Dashboard
+            </a>
+        </div>
+    </header>
+
+    <main class="flex-1 p-6 md:p-10 flex justify-center">
+
+        {% if messages %}
+            <div class="absolute top-20 w-full max-w-xl mx-auto z-20 px-6">
+                {% for message in messages %}
+                    <div class="bg-green-100 border-l-4 border-primary-green text-green-800 p-4 rounded-lg mb-4 shadow-lg" role="alert">
+                        <p class="font-bold">Success!</p>
+                        <p>{{ message }}</p>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <div class="w-full max-w-2xl bg-white p-8 rounded-xl shadow-2xl border border-gray-200 mt-4">
+            <h2 class="text-2xl font-bold text-dark-gray mb-6">Manage Profile and Security</h2>
+            
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                <div class="pb-6 border-b border-gray-200 mb-6">
+                    <h3 class="text-xl font-semibold text-primary-green mb-4">Update Profile Details</h3>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        
+                        <div>
+                            <label for="first_name" class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+                            <input type="text" id="first_name" name="first_name" value="{{ user.first_name }}" class="form-input w-full border border-gray-300 rounded-lg p-2.5 transition duration-150">
+                        </div>
+                        
+                        <div>
+                            <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                            <input type="email" id="email" name="email" value="{{ user.email }}" class="form-input w-full border border-gray-300 rounded-lg p-2.5 transition duration-150">
+                        </div>
+
+                        <div>
+                            <label for="phone" class="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+                            <input type="text" id="phone" name="phone" value="{{ profile.phone }}" class="form-input w-full border border-gray-300 rounded-lg p-2.5 transition duration-150">
+                        </div>
+
+                        <div class="md:col-span-2">
+                            <label for="address" class="block text-sm font-medium text-gray-700 mb-1">Address</label>
+                            <textarea id="address" name="address" rows="3" class="form-input w-full border border-gray-300 rounded-lg p-2.5 transition duration-150">{{ profile.address }}</textarea>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 flex items-center space-x-4">
+                        {% if profile.profile_picture %}
+                            <img src="{{ profile.profile_picture.url }}" alt="Profile Picture" class="w-20 h-20 rounded-full object-cover border-2 border-primary-green shadow-md">
+                        {% else %}
+                             <div class="w-20 h-20 rounded-full bg-gray-200 flex items-center justify-center text-lg text-gray-500 font-bold border-2 border-gray-300">
+                                No Pic
+                            </div>
+                        {% endif %}
+                        
+                        <div>
+                            <label for="profile_picture" class="block text-sm font-medium text-gray-700 mb-1">Change Profile Picture</label>
+                            <input type="file" id="profile_picture" name="profile_picture" class="w-full text-sm text-dark-gray file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary-green file:text-dark-gray hover:file:bg-primary-green/80 cursor-pointer">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pb-6 mb-6">
+                    <h3 class="text-xl font-semibold text-primary-green mb-4">Change Password</h3>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        
+                        <div>
+                            <label for="current_password" class="block text-sm font-medium text-gray-700 mb-1">Current Password</label>
+                            <input type="password" id="current_password" name="current_password" class="form-input w-full border border-gray-300 rounded-lg p-2.5 transition duration-150">
+                        </div>
+
+                        <div>
+                            <label for="new_password" class="block text-sm font-medium text-gray-700 mb-1">New Password</label>
+                            <input type="password" id="new_password" name="new_password" class="form-input w-full border border-gray-300 rounded-lg p-2.5 transition duration-150">
+                        </div>
+
+                        <div>
+                            <label for="confirm_password" class="block text-sm font-medium text-gray-700 mb-1">Confirm New Password</label>
+                            <input type="password" id="confirm_password" name="confirm_password" class="form-input w-full border border-gray-300 rounded-lg p-2.5 transition duration-150">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="text-right pt-4 border-t border-gray-200">
+                    <button type="submit" class="bg-primary-green hover-bg-primary-green text-dark-gray font-bold px-6 py-3 rounded-lg text-lg transition duration-300 shadow-xl transform hover:scale-[1.01]">
+                        Save Changes
+                    </button>
+                </div>
+            </form>
+        </div>
+    </main>
+</body>
+</html>

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Reports | SupportHub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* --- Custom Pastel Green and Dark Gray Theme --- */
+        .bg-primary-green { background-color: #68d391; }
+        .hover-bg-primary-green:hover { background-color: #48bb78; }
+        .text-primary-green { color: #68d391; }
+        .bg-dark-header { background-color: #2d3748; } /* Dark Gray/Black for Header */
+        .bg-pastel-light { background-color: #f7fafc; } /* Light background */
+        .text-dark-gray { color: #2d3748; }
+        
+        /* Custom cell padding for better table aesthetics */
+        .table-cell {
+            padding-top: 0.85rem;
+            padding-bottom: 0.85rem;
+            padding-left: 1.5rem;
+            padding-right: 1.5rem;
+        }
+    </style>
+</head>
+<body class="bg-pastel-light min-h-screen flex flex-col font-sans">
+
+    <header class="bg-dark-header text-white py-4 shadow-xl">
+        <div class="container mx-auto flex justify-between items-center px-6 md:px-8">
+            <h1 class="text-2xl font-extrabold flex items-center space-x-2">
+                <svg class="w-6 h-6 text-primary-green" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 2V9m2 2V7m-4 12V3H5v16c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2z"/></svg>
+                <span>My Reports</span>
+            </h1>
+            <a href="{% url 'dashboard' %}" class="bg-primary-green text-dark-gray px-4 py-2 rounded-lg font-semibold hover-bg-primary-green transition duration-200 shadow-md">
+                ← Back to Dashboard
+            </a>
+        </div>
+    </header>
+
+    <main class="flex-grow container mx-auto px-4 md:px-8 py-10">
+        <h2 class="text-2xl font-bold text-dark-gray mb-6 border-b pb-2 border-gray-300">Resolved Complaints & Reports</h2>
+
+        {% if reports %}
+        <div class="overflow-x-auto bg-white shadow-2xl rounded-xl border border-gray-200">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="table-cell text-left text-xs font-extrabold text-primary-green uppercase tracking-wider">#</th>
+                        <th class="table-cell text-left text-xs font-extrabold text-primary-green uppercase tracking-wider">Complaint Title</th>
+                        <th class="table-cell text-left text-xs font-extrabold text-primary-green uppercase tracking-wider hidden sm:table-cell">Report Title</th>
+                        <th class="table-cell text-left text-xs font-extrabold text-primary-green uppercase tracking-wider hidden md:table-cell">Created On</th>
+                        <th class="table-cell text-center text-xs font-extrabold text-primary-green uppercase tracking-wider">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100">
+                    {% for report in reports %}
+                    <tr class="hover:bg-gray-50 transition duration-150">
+                        <td class="table-cell text-gray-500">{{ forloop.counter }}</td>
+                        <td class="table-cell font-medium text-dark-gray">
+                            {{ report.complaint.title }}
+                        </td>
+                        <td class="table-cell text-gray-700 hidden sm:table-cell">
+                            {{ report.report_title }}
+                        </td>
+                        <td class="table-cell text-gray-500 text-sm hidden md:table-cell">
+                            {{ report.created_at|date:"M d, Y" }}
+                        </td>
+                        <td class="table-cell text-center space-x-2">
+                            
+                            <a href="{% url 'view_report' report.id %}" 
+                               class="inline-flex items-center bg-blue-500 hover:bg-blue-600 text-white px-3 py-2 rounded-lg text-sm font-semibold transition duration-200 shadow-md">
+                                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                                View
+                            </a>
+
+                            <a href="{% url 'download_report' report.id %}" 
+                               class="inline-flex items-center bg-primary-green hover-bg-primary-green text-dark-gray px-3 py-2 rounded-lg text-sm font-semibold transition duration-200 shadow-md">
+                                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                                Download
+                            </a>
+
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        {% else %}
+        <div class="max-w-xl mx-auto p-12 bg-white rounded-xl shadow-xl border border-gray-200 mt-10 text-center">
+            <svg class="w-16 h-16 mx-auto text-primary-green mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+            <h2 class="text-xl font-bold text-dark-gray mb-2">No Reports Available</h2>
+            <p class="text-gray-500 mb-6">Once your complaints are **Resolved** by the support team, the corresponding reports will appear here for viewing and downloading.</p>
+            <a href="{% url 'track_complaints' %}" class="inline-block bg-primary-green text-dark-gray font-semibold px-6 py-3 rounded-lg hover-bg-primary-green transition duration-300 shadow-md">
+                Track Pending Complaints
+            </a>
+        </div>
+        {% endif %}
+    </main>
+
+    <footer class="bg-white border-t text-gray-600 text-center py-4 text-sm">
+        © 2024–2025 SupportHub. All rights reserved.
+    </footer>
+</body>
+</html>

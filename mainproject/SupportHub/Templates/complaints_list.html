@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ page_title }} | SupportHub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* --- Custom Pastel Green Theme --- */
+        .bg-primary-green { background-color: #68d391; }
+        .hover-bg-primary-green:hover { background-color: #48bb78; }
+        .text-primary-green { color: #68d391; }
+        .bg-header-color { background-color: #90cdf4; } /* Soft Pastel Blue for Header */
+        .bg-pastel-light { background-color: #f7fafc; } /* Light background */
+        .text-dark-gray { color: #2d3748; }
+
+        /* Custom scrollbar for better feel */
+        main::-webkit-scrollbar { width: 8px; }
+        main::-webkit-scrollbar-track { background: #e0e0e0; }
+        main::-webkit-scrollbar-thumb {
+            background-color: #68d391;
+            border-radius: 4px;
+            border: 2px solid #e0e0e0;
+        }
+
+        /* Responsive Table Overrides for better cell padding */
+        .table-cell {
+            padding-top: 0.75rem; /* py-3 */
+            padding-bottom: 0.75rem; /* py-3 */
+            padding-left: 1.5rem; /* px-6 */
+            padding-right: 1.5rem; /* px-6 */
+        }
+    </style>
+</head>
+<body class="bg-pastel-light min-h-screen flex flex-col font-sans">
+
+    <!-- Header (Pastel Blue) -->
+    <header class="bg-header-color text-white py-4 px-6 shadow-lg flex justify-between items-center z-10">
+        <h1 class="text-2xl font-bold">{{ page_title }}</h1>
+        <a href="{% url 'dashboard' %}" class="inline-flex items-center text-white font-medium hover:underline transition duration-200 opacity-90 hover:opacity-100">
+            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 17l-5-5m0 0l5-5m-5 5h12"></path></svg>
+            Back to Dashboard
+        </a>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 p-6 md:p-10">
+        {% if complaints %}
+            <div class="bg-white rounded-xl shadow-2xl overflow-hidden border border-gray-200">
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50 border-b-2 border-primary-green">
+                            <tr>
+                                <th class="table-cell text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Title</th>
+                                <th class="table-cell text-left text-xs font-bold text-gray-700 uppercase tracking-wider hidden sm:table-cell">Category</th>
+                                <th class="table-cell text-left text-xs font-bold text-gray-700 uppercase tracking-wider hidden md:table-cell">Description</th>
+                                <th class="table-cell text-center text-xs font-bold text-gray-700 uppercase tracking-wider">Status</th>
+                                <th class="table-cell text-left text-xs font-bold text-gray-700 uppercase tracking-wider hidden lg:table-cell">Created At</th>
+                                <th class="table-cell text-center text-xs font-bold text-gray-700 uppercase tracking-wider">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-100">
+                            {% for complaint in complaints %}
+                            <tr class="hover:bg-gray-50 transition duration-150">
+                                <!-- Title -->
+                                <td class="table-cell font-semibold text-dark-gray">
+                                    {{ complaint.title }}
+                                </td>
+
+                                <!-- Category -->
+                                <td class="table-cell text-gray-600 hidden sm:table-cell">
+                                    {{ complaint.category }}
+                                </td>
+
+                                <!-- Description -->
+                                <td class="table-cell text-gray-500 text-sm hidden md:table-cell">
+                                    {{ complaint.description|truncatewords:8 }}
+                                </td>
+
+                                <!-- Status Badge -->
+                                <td class="table-cell text-center">
+                                    {% if complaint.status == 'Pending' %}
+                                        <span class="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-semibold bg-yellow-100 text-yellow-800 ring-1 ring-yellow-400">
+                                            ⏳ Pending
+                                        </span>
+                                    {% elif complaint.status == 'Resolved' %}
+                                        <span class="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-semibold bg-green-100 text-green-800 ring-1 ring-primary-green">
+                                            ✅ Resolved
+                                        </span>
+                                    {% else %}
+                                        <span class="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-semibold bg-gray-100 text-gray-600 ring-1 ring-gray-300">
+                                            {{ complaint.status }}
+                                        </span>
+                                    {% endif %}
+                                </td>
+
+                                <!-- Created At -->
+                                <td class="table-cell text-gray-500 text-sm hidden lg:table-cell">
+                                    {{ complaint.created_at|date:"d M Y" }}
+                                </td>
+
+                                <!-- Actions (View/Download) -->
+                                <td class="table-cell text-center space-y-2 lg:space-y-0 lg:space-x-2 flex flex-col lg:flex-row items-center justify-center">
+                                    
+                                    <!-- View Report Button -->
+                                    {% if complaint.report %}
+                                    <a href="{% url 'view_report' complaint.report.id %}" 
+                                        class="w-full lg:w-auto inline-flex items-center justify-center bg-blue-500 hover:bg-blue-600 text-white px-3 py-2 rounded-lg text-sm font-medium transition duration-200 shadow-md">
+                                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                                        View
+                                    </a>
+                                    {% endif %}
+                                    
+                                    <!-- Download Report Button -->
+                                    {% if complaint.report %}
+                                    <a href="{% url 'download_report' complaint.report.id %}" 
+                                        class="w-full lg:w-auto inline-flex items-center justify-center bg-primary-green hover-bg-primary-green text-white px-3 py-2 rounded-lg text-sm font-medium transition duration-200 shadow-md">
+                                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                                        Download
+                                    </a>
+                                    {% endif %}
+
+                                    {% if not complaint.report %}
+                                        <span class="text-gray-400 text-sm">No Report</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        {% else %}
+            <!-- Empty State -->
+            <div class="max-w-xl mx-auto p-12 bg-white rounded-xl shadow-xl border border-gray-200 mt-10 text-center">
+                <svg class="w-16 h-16 mx-auto text-primary-green mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2m-9 0V3a2 2 0 012-2h4a2 2 0 012 2v2m-6 0h6"></path></svg>
+                <h2 class="text-xl font-bold text-dark-gray mb-2">Nothing to show yet!</h2>
+                <p class="text-gray-500 mb-6">You currently don't have any complaints or reports in this section.</p>
+                <a href="{% url 'register_complaints' %}" class="inline-block bg-primary-green text-white font-semibold px-6 py-3 rounded-lg hover-bg-primary-green transition duration-300 shadow-md">
+                    Register a New Complaint
+                </a>
+            </div>
+        {% endif %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-gray-200 text-center py-3 text-sm text-gray-600">
+        © 2025 SupportHub. All rights reserved.
+    </footer>
+
+</body>
+</html>
